@@ -9,6 +9,7 @@
 namespace huijiewei\moment;
 
 use yii\web\AssetBundle;
+use yii\web\View;
 
 class MomentAsset extends AssetBundle
 {
