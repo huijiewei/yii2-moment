@@ -38,18 +38,25 @@ class MomentAsset extends AssetBundle
         }
     }
 
+    public function registerAssetFiles($view)
+    {
+        parent::registerAssetFiles($view);
+
+        $this->registerLocaleInternal($view);
+    }
+
     public function registerLocaleInternal($view)
     {
         $localeFilePath = $this->tryFindLocale();
 
-        if (YII_DEBUG && !$localeFilePath) {
-            throw new InvalidConfigException('Locale file "' . \Yii::$app->language . '" not exists!');
+        if (!$localeFilePath) {
+            return;
         }
 
         $manager = $view->getAssetManager();
 
         $view->registerJsFile(
-            $manager->getAssetUrl($this, $this->locale),
+            $manager->getAssetUrl($this, 'locale/' . $this->locale),
             $this->jsOptions,
             'moment-locale-' . $this->locale
         );
@@ -62,16 +69,18 @@ class MomentAsset extends AssetBundle
 
     private function tryFindLocale()
     {
+        $localePath = $this->sourcePath . '/locale';
+
         $localeFile = substr(strtolower($this->locale), 0, 2) . '.js';
-        $localeFilePath = "{$this->sourcePath}/$localeFile";
+        $localeFilePath = "{$localePath}/$localeFile";
 
         if (!file_exists($localeFilePath)) {
             $localeFile = substr(strtolower($this->locale), 0, 5) . '.js';
-            $localeFilePath = "{$this->sourcePath}/$localeFile";
+            $localeFilePath = "{$localePath}/$localeFile";
 
             if (!file_exists($localeFilePath)) {
                 $localeFile = substr(strtolower($this->locale), 3, 5) . '.js';
-                $localeFilePath = "{$this->sourcePath}/$localeFile";
+                $localeFilePath = "{$localePath}/$localeFile";
 
                 if (!file_exists($localeFilePath)) {
                     return false;
@@ -81,6 +90,6 @@ class MomentAsset extends AssetBundle
 
         $this->locale = $localeFile;
 
-        return $localeFilePath;
+        return true;
     }
 }
