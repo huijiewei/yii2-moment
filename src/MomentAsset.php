@@ -24,8 +24,8 @@ class MomentAsset extends AssetBundle
 
     public $publishOptions = [
         'only' => [
-            'min/',
-            'locale/',
+            'min/*',
+            'locale/*',
         ]
     ];
 
